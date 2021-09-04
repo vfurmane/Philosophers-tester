@@ -1,0 +1,3 @@
+Usage: ../Philosophers/philo/philo [-h] No_of_philos time_to_die time_to_eat time_to_sleep [No_of_times_each_philo_must_eat]
+
+  -h, --help	display this help and exit
