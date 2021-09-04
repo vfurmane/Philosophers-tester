@@ -1,0 +1,101 @@
+.TH	BASH-PLOP 3 2021-08-07
+.SH NAME
+bash-plop
+-
+A bash testing framework suitable for 42 Projects.
+.SH	SYNOPSIS
+.nf
+.B	plop_init
+.fi
+.nf
+.B	plop_end
+.fi
+.nf
+.BI	"plop_test_command " command
+.fi
+.nf
+.B	plop_test_summary
+.fi
+.nf
+.BI	"plop_pipe_cmd " command1 " " command2
+.fi
+.SH	DESCRIPTION
+.TP
+.B	plop_init
+This function should be called first. It initializes all needed variables.
+.TP
+.B	plop_end
+This function should be called at the end of all tests.
+It prints a summary of all tests.
+.TP
+.B	plop_test_command
+This function prints a \fIdescription\fR
+and executes the \fIcommand\fR passed in argument.
+The \fIdescription\fR can be passed using the variable \fBPLOP_DESCRIPTION\fR.
+If the user defined a \fIplop_setup\fR function, it will be called first.
+The function returns the exit status of the executed command,
+and also stores it in the variable \fBPLOP_EXIT_STATUS\fR.
+If the test times out, the variable \fBPLOP_TIMED_OUT\fR will be set to 1.
+You can set a prefix command in the variable \fBPLOP_LEAK_CMD\fR:
+it is called like that because it can mainly used to check memory leaks.
+You can also decide to skip the test
+by setting the variable \fBPLOP_SKIP\fR to 1:
+the main purpose is to only print the test description
+without actually executing the test suite.
+.TP
+.B	plop_test_summary
+This function prints a summary of the previously executed command
+(if it failed or not).
+If the user defined a \fIplop_teardown\fR function,
+it will be called at the end.
+If the variable \fBPLOP_SKIP\fR is set to 1, you should still call this function
+to reset the test and print a newline.
+.TP
+.B	plop_pipe_cmd
+This function allows you to pipe \fIcommand1\fR into \fIcommand2\fR.
+It is useful when you want to use bash pipes in the test,
+because it is not possible to store that in a string.
+.SH	ENVIRONMENT
+.TP
+.B	PLOP_DESCRIPTION
+The description displayed for the test.
+.TP
+.B	PLOP_EXIT_STATUS
+The exit status of the tested command.
+.TP
+.B	PLOP_LEAK_CMD
+The prefix command in front of the the tested one.
+The main purpose is to use a program like \fIvalgrind\fR to check leaks.
+.TP
+.B	PLOP_LINE_LENGTH
+The length of the description line. By default, it is set to 80.
+.TP
+.B	PLOP_MIN_NUM_LENGHT
+The minimum length of the displayed test number on the description line.
+By default, it is set to 2.
+.TP
+.B	PLOP_RESULT_COLOR
+The color (in ANSI escape codes) in which the test result will be outputed.
+By default, if the variable \fBPLOP_TEST_RESULT\fR is set to "OK",
+the color is set to green, otherwise it is set to red.
+.TP
+.B	PLOP_SKIP
+If set to 1, the test will be skipped. Only the description will be displayed.
+.TP
+.B	PLOP_TEST_NUM
+The number of the test (automatically incremented in \fIplop_test_summary\fR).
+.TP
+.B	PLOP_TEST_OUTPUT
+The file in which the test output will be redirected (/dev/null by default).
+.TP
+.B	PLOP_TEST_RESULT
+The test result. It should be one of these "OK", "KO",
+"LK" (leak) or "TO" (timeout).
+.TP
+.B	PLOP_TIMED_OUT
+1 if the test has timed out.
+.TP
+.B	PLOP_TIMEOUT_SECONDS
+The time in seconds after which the test is killed.
+If set to 0, the test will never be killed.
+By default, it is set to 5.
